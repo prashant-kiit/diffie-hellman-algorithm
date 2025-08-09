@@ -15,10 +15,21 @@ function Login({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setIsLoggedIn(true);
+    try {
+      const response = await fetch(
+        `http://localhost:8000/login?username=${formData?.username}&&password=${formData?.password}`
+      );
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error);
+      }
+      console.log(result);
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
