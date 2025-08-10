@@ -67,6 +67,17 @@ server.get("/login", (req, res) => {
   }
 });
 
+server.get("/key", async (req, res) => {
+  const oldkey = (await keytar.getPassword(
+    "DiffieHellmanApp",
+    "KEY"
+  )) as string;
+  res.status(200).json({
+    key: oldkey
+  });
+  return;
+});
+
 server.use(authorisor);
 
 server.get("/verify-token", (req, res) => {
