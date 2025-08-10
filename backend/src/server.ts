@@ -68,6 +68,7 @@ server.get("/users", (req, res) => {
     status: "success",
     message: users,
   });
+  return;
 });
 
 server.get("/logout", (req, res) => {
@@ -77,6 +78,7 @@ server.get("/logout", (req, res) => {
     sameSite: "strict",
   });
   res.status(200).json({ status: "success", message: "Logged out" });
+  return;
 });
 
 server.listen(PORT, () => {
