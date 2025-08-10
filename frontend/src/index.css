@@ -62,6 +62,7 @@ button:focus-visible {
   flex-direction: column;
   justify-content: center;
   place-items: center;
+  gap: 10px;
 }
 
 .button-box {
