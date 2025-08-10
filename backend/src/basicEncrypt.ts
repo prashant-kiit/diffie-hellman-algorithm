@@ -1,14 +1,29 @@
 import CryptoJS from "crypto-js";
-const KEY = process.env.KEY || "mysecretkey";
+import keytar from "keytar";
+
+async function sha256(message: string) {
+  const msgBuffer = new TextEncoder().encode(message);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 // Encrypt
-export function encrypt(data: any) {
+export async function encrypt(data: any) {
+  const oldkey = (await keytar.getPassword(
+    "DiffieHellmanApp",
+    "KEY"
+  )) as string;
+  console.log("oldkey", oldkey);
+  const newkey = await sha256(oldkey);
+  console.log("newkey", newkey);
   const json = JSON.stringify(data);
-  return CryptoJS.AES.encrypt(json, KEY).toString();
+  await keytar.setPassword("DiffieHellmanApp", "KEY", newkey);
+  return CryptoJS.AES.encrypt(json, newkey).toString();
 }
 
 // Decrypt
-export function decrypt(ciphertext: string) {
-  const bytes = CryptoJS.AES.decrypt(ciphertext, KEY);
-  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-}
+// export function decrypt(ciphertext: string) {
+//   const bytes = CryptoJS.AES.decrypt(ciphertext, KEY);
+//   return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+// }

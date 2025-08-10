@@ -39,7 +39,8 @@ function Welcome({
 
     if (response.ok) {
       const result = await response.json();
-      const decryptedResult = decrypt(result?.message);
+      console.log(result);
+      const decryptedResult = await decrypt(result?.message);
       console.log(decryptedResult);
       setUsers(decryptedResult);
     }

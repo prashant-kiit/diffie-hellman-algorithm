@@ -22,7 +22,6 @@ function Login({
         `http://localhost:8000/login?username=${formData?.username}&&password=${formData?.password}`,
         {
           method: "GET",
-          headers: { "Content-Type": "application/json" },
           credentials: "include",
         }
       );

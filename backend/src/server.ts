@@ -4,12 +4,17 @@ import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import keytar from "keytar";
 import authorisor from "./authorisor.js";
-import {encrypt, decrypt} from "./basicEncrypt.js";
+import { encrypt } from "./basicEncrypt.js";
 
 const server = express();
 const PORT = process.env.PORT || 8000;
 const SECRET = process.env.SECRET || "MY_SECRET";
+const KEY = process.env.KEY || "mysecretkey";
+// const oldkey = await keytar.getPassword("DiffieHellmanApp", "KEY");
+// if (!oldkey)
+await keytar.setPassword("DiffieHellmanApp", "KEY", KEY);
 
 const users = [
   {
@@ -64,10 +69,19 @@ server.get("/login", (req, res) => {
 
 server.use(authorisor);
 
-server.get("/users", (req, res) => {
+server.get("/verify-token", (req, res) => {
+  const username = req.user?.username as string;
   res.status(200).json({
     status: "success",
-    message: encrypt(users),
+    message: `User ${username} already logged in`,
+  });
+  return;
+});
+
+server.get("/users", async (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: await encrypt(users),
   });
   return;
 });

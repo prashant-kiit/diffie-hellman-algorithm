@@ -1,13 +1,27 @@
 import jwt from "jsonwebtoken";
+import type { Request, Response } from "express";
+
 const SECRET = process.env.SECRET || "MY_SECRET";
 
-function authorisor(req: any, res: any, next: any) {
+declare global {
+  namespace Express {
+    export interface Request {
+      user?: {
+        username: string;
+      };
+    }
+  }
+}
+
+function authorisor(req: Request, res: Response, next: any) {
   try {
     const token = req.cookies?.token;
     if (!token) {
       throw new Error("Unauthorized request");
     }
-    const decoded = jwt.verify(token, SECRET);
+    const decoded = jwt.verify(token, SECRET) as {
+      username: string;
+    };
     req.user = decoded;
     next();
     return;
