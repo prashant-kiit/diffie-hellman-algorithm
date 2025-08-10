@@ -1,13 +1,21 @@
+import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import authorisor from "./authorisor.js";
 
 const server = express();
 const PORT = process.env.PORT || 8000;
+const SECRET = process.env.SECRET || "MY_SECRET";
 
 const users = [
   {
     username: "Prashant",
+    password: "12345",
+  },
+  {
+    username: "Chinku",
     password: "12345",
   },
 ];
@@ -28,10 +36,7 @@ server.get("/login", (req, res) => {
     if (user.length === 0) throw new Error("User is not found");
 
     console.log(user);
-    const token = jwt.sign(
-      { username: user[0]?.username },
-      process.env.SECRET || "SECRET"
-    );
+    const token = jwt.sign({ username: user[0]?.username }, SECRET);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -52,6 +57,15 @@ server.get("/login", (req, res) => {
     });
     return;
   }
+});
+
+server.use(authorisor);
+
+server.get("/users", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: users,
+  });
 });
 
 server.listen(PORT, () => {
