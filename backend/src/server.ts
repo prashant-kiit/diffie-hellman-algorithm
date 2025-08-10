@@ -3,6 +3,7 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 import authorisor from "./authorisor.js";
 
 const server = express();
@@ -26,6 +27,7 @@ server.use(
     credentials: true,
   })
 );
+server.use(cookieParser());
 
 server.get("/login", (req, res) => {
   try {
@@ -41,7 +43,7 @@ server.get("/login", (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      sameSite: "lax",
+      sameSite: "strict",
     });
 
     res.status(200).json({
@@ -66,6 +68,15 @@ server.get("/users", (req, res) => {
     status: "success",
     message: users,
   });
+});
+
+server.get("/logout", (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+  });
+  res.status(200).json({ status: "success", message: "Logged out" });
 });
 
 server.listen(PORT, () => {
