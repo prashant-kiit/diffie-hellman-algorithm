@@ -19,7 +19,12 @@ function Login({
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:8000/login?username=${formData?.username}&&password=${formData?.password}`
+        `http://localhost:8000/login?username=${formData?.username}&&password=${formData?.password}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
       );
       const result = await response.json();
       if (!response.ok) {
