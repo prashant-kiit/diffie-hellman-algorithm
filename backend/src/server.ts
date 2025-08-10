@@ -5,6 +5,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import authorisor from "./authorisor.js";
+import {encrypt, decrypt} from "./basicEncrypt.js";
 
 const server = express();
 const PORT = process.env.PORT || 8000;
@@ -66,7 +67,7 @@ server.use(authorisor);
 server.get("/users", (req, res) => {
   res.status(200).json({
     status: "success",
-    message: users,
+    message: encrypt(users),
   });
   return;
 });

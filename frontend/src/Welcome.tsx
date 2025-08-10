@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { decrypt } from "../utils/basicEncrypt";
 
 type Users = { username: string; password: string }[] | [];
 
@@ -38,8 +39,9 @@ function Welcome({
 
     if (response.ok) {
       const result = await response.json();
-      console.log(result?.message);
-      setUsers(result?.message);
+      const decryptedResult = decrypt(result?.message);
+      console.log(decryptedResult);
+      setUsers(decryptedResult);
     }
   }
 
