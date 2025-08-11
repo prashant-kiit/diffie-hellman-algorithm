@@ -1,4 +1,5 @@
 import { useState } from "react";
+import fetchDynamicKey from "../utils/fetchDynamicKey";
 
 function Login({
   setIsLoggedIn,
@@ -30,6 +31,7 @@ function Login({
         throw new Error(result.error);
       }
       console.log(result);
+      await fetchDynamicKey();
       setIsLoggedIn(true);
     } catch (error) {
       console.error(error);

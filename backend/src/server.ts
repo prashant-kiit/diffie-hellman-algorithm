@@ -29,7 +29,7 @@ const users = [
 
 server.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:4173",
     credentials: true,
   })
 );
@@ -67,6 +67,8 @@ server.get("/login", (req, res) => {
   }
 });
 
+server.use(authorisor);
+
 server.get("/key", async (req, res) => {
   const oldkey = (await keytar.getPassword(
     "DiffieHellmanApp",
@@ -77,8 +79,6 @@ server.get("/key", async (req, res) => {
   });
   return;
 });
-
-server.use(authorisor);
 
 server.get("/verify-token", (req, res) => {
   const username = req.user?.username as string;

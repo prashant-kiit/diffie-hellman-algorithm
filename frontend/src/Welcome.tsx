@@ -19,6 +19,7 @@ function Welcome({
   }, []);
 
   async function handleLogout(): Promise<void> {
+    if (!isLoggedIn) return;
     const response = await fetch("http://localhost:8000/logout", {
       method: "GET",
       credentials: "include",
@@ -27,7 +28,8 @@ function Welcome({
     if (response.ok) {
       const result = await response.json();
       alert(result.message);
-      if (isLoggedIn) setIsLoggedIn(false);
+      localStorage.removeItem("KEY");
+      setIsLoggedIn(false);
     }
   }
 

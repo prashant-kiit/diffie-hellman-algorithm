@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Login from "./Login";
 import Welcome from "./Welcome";
+import fetchDynamicKey from "../utils/fetchDynamicKey";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,6 +19,7 @@ function App() {
           throw new Error(result.error);
         }
         console.log(result);
+        await fetchDynamicKey();
         setIsLoggedIn(true);
       } catch (error) {
         console.error(error);
