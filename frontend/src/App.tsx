@@ -24,7 +24,7 @@ function App() {
         console.log(result);
         const key = await fetchDynamicKey();
         setDynamicKey(key);
-        console.log("Dynamic key fetched", key);
+        console.log("Dynamic key fetched", dynamicKey, key);
         setIsLoggedIn(true);
       } catch (error) {
         console.error(error);

@@ -9,16 +9,16 @@ async function sha256(message: string) {
 }
 
 // Encrypt
-export async function encrypt(data: any) {
+export async function encrypt(data: any, username: string) {
   const oldkey = (await keytar.getPassword(
     "DiffieHellmanApp",
-    "KEY"
+    `KEY-${username}`
   )) as string;
   console.log("oldkey", oldkey);
   const newkey = await sha256(oldkey);
   console.log("newkey", newkey);
   const json = JSON.stringify(data);
-  await keytar.setPassword("DiffieHellmanApp", "KEY", newkey);
+  await keytar.setPassword("DiffieHellmanApp", `KEY-${username}`, newkey);
   return CryptoJS.AES.encrypt(json, newkey).toString();
 }
 

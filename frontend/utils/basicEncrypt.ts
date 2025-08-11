@@ -15,7 +15,7 @@ async function sha256(message: string) {
 
 // Key should be provided only to valid users
 // Hash should be stored in Context not in Local Storage
-// user name specfic key from backend
+// User name specfic key from backend
 // Can be a server action
 // Have RSA Keys based on Double Ratched Hash
 // Decrypt

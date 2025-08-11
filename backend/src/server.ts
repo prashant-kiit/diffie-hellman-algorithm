@@ -12,9 +12,6 @@ const server = express();
 const PORT = process.env.PORT || 8000;
 const SECRET = process.env.SECRET || "MY_SECRET";
 const KEY = process.env.KEY || "mysecretkey";
-// const oldkey = await keytar.getPassword("DiffieHellmanApp", "KEY");
-// if (!oldkey)
-await keytar.setPassword("DiffieHellmanApp", "KEY", KEY);
 
 const users = [
   {
@@ -35,7 +32,7 @@ server.use(
 );
 server.use(cookieParser());
 
-server.get("/login", (req, res) => {
+server.get("/login", async (req, res) => {
   try {
     const { username, password } = req.query;
     const user = users.filter(
@@ -45,6 +42,12 @@ server.get("/login", (req, res) => {
 
     console.log(user);
     const token = jwt.sign({ username: user[0]?.username }, SECRET);
+
+    await keytar.setPassword(
+      "DiffieHellmanApp",
+      `KEY-${user[0]?.username}`,
+      KEY
+    );
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -69,19 +72,9 @@ server.get("/login", (req, res) => {
 
 server.use(authorisor);
 
-server.get("/key", async (req, res) => {
-  const oldkey = (await keytar.getPassword(
-    "DiffieHellmanApp",
-    "KEY"
-  )) as string;
-  res.status(200).json({
-    key: oldkey
-  });
-  return;
-});
-
 server.get("/verify-token", (req, res) => {
   const username = req.user?.username as string;
+
   res.status(200).json({
     status: "success",
     message: `User ${username} already logged in`,
@@ -89,15 +82,34 @@ server.get("/verify-token", (req, res) => {
   return;
 });
 
-server.get("/users", async (req, res) => {
+server.get("/key", async (req, res) => {
+  const username = req.user?.username as string;
+  const oldkey = (await keytar.getPassword(
+    "DiffieHellmanApp",
+    `KEY-${username}`
+  )) as string;
+
   res.status(200).json({
-    status: "success",
-    message: await encrypt(users),
+    key: oldkey,
   });
   return;
 });
 
-server.get("/logout", (req, res) => {
+server.get("/users", async (req, res) => {
+  const username = req.user?.username as string;
+
+  res.status(200).json({
+    status: "success",
+    message: await encrypt(users, username),
+  });
+  return;
+});
+
+server.get("/logout", async (req, res) => {
+  const username = req.user?.username as string;
+
+  await keytar.deletePassword("DiffieHellmanApp", `KEY-${username}`);
+
   res.clearCookie("token", {
     httpOnly: true,
     secure: false,
