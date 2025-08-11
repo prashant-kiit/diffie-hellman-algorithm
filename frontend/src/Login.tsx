@@ -1,5 +1,7 @@
 import { useState } from "react";
 import fetchDynamicKey from "../utils/fetchDynamicKey";
+import { dynamicKeyAtom } from "../atoms/dynamicKey";
+import { useAtom } from "jotai";
 
 function Login({
   setIsLoggedIn,
@@ -10,6 +12,7 @@ function Login({
     username: "",
     password: "",
   });
+  const [dynamicKey, setDynamicKey] = useAtom(dynamicKeyAtom);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,7 +34,9 @@ function Login({
         throw new Error(result.error);
       }
       console.log(result);
-      await fetchDynamicKey();
+      const key = await fetchDynamicKey();
+      setDynamicKey(key);
+      console.log(dynamicKey);
       setIsLoggedIn(true);
     } catch (error) {
       console.error(error);

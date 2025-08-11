@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import Login from "./Login";
 import Welcome from "./Welcome";
 import fetchDynamicKey from "../utils/fetchDynamicKey";
+import { dynamicKeyAtom } from "../atoms/dynamicKey";
+import { useAtom } from "jotai";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [dynamicKey, setDynamicKey] = useAtom(dynamicKeyAtom);
 
   useEffect(() => {
     (async () => {
@@ -19,7 +22,9 @@ function App() {
           throw new Error(result.error);
         }
         console.log(result);
-        await fetchDynamicKey();
+        const key = await fetchDynamicKey();
+        setDynamicKey(key);
+        console.log("Dynamic key fetched", dynamicKey);
         setIsLoggedIn(true);
       } catch (error) {
         console.error(error);

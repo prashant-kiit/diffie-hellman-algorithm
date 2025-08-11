@@ -13,13 +13,18 @@ async function sha256(message: string) {
 //   return CryptoJS.AES.encrypt(json, KEY).toString();
 // }
 
+// Key should be provided only to valid users
+// Hash should be stored in Context not in Local Storage
+// user name specfic key from backend
+// Can be a server action
+// Have RSA Keys based on Double Ratched Hash
 // Decrypt
-export async function decrypt(ciphertext: string) {
-  const oldkey = localStorage.getItem("KEY") as string;
-  console.log("oldkey", oldkey);
-  const newkey = await sha256(oldkey);
-  console.log("new key", newkey);
+export async function decrypt(ciphertext: string, key: string) {
+  // const oldkey = localStorage.getItem("KEY") as string;
+  // console.log("oldkey", oldkey);
+  const newkey = await sha256(key);
+  console.log("key", newkey);
   const bytes = CryptoJS.AES.decrypt(ciphertext, newkey);
-  localStorage.setItem("KEY", newkey);
-  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  // localStorage.setItem("KEY", newkey);
+  return [JSON.parse(bytes.toString(CryptoJS.enc.Utf8)), newkey];
 }

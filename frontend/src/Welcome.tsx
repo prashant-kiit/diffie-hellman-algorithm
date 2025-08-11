@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { decrypt } from "../utils/basicEncrypt";
+import { useAtom } from "jotai";
+import { dynamicKeyAtom } from "../atoms/dynamicKey";
 
 type Users = { username: string; password: string }[] | [];
 
@@ -11,11 +13,13 @@ function Welcome({
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [users, setUsers] = useState<Users>([]);
+  const [dynamicKey, setDynamicKey] = useAtom(dynamicKeyAtom);
 
   useEffect(() => {
     (async () => {
       await handleGetUsers();
     })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleLogout(): Promise<void> {
@@ -28,7 +32,9 @@ function Welcome({
     if (response.ok) {
       const result = await response.json();
       alert(result.message);
-      localStorage.removeItem("KEY");
+      // localStorage.removeItem("KEY");
+      setDynamicKey("");
+      console.log(dynamicKey);
       setIsLoggedIn(false);
     }
   }
@@ -42,9 +48,10 @@ function Welcome({
     if (response.ok) {
       const result = await response.json();
       console.log(result);
-      const decryptedResult = await decrypt(result?.message);
-      console.log(decryptedResult);
-      setUsers(decryptedResult);
+      const decryptedResult = await decrypt(result?.message, dynamicKey);
+      console.log(decryptedResult[0]);
+      setDynamicKey(decryptedResult[1]);
+      setUsers(decryptedResult[0]);
     }
   }
 

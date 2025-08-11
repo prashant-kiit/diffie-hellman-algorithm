@@ -5,7 +5,8 @@ async function fetchDynamicKey() {
   });
   if (response.ok) {
     const result = await response.json();
-    localStorage.setItem("KEY", result?.key);
+    // localStorage.setItem("KEY", result?.key);
+    return result?.key;
   }
 }
 
