@@ -32,7 +32,6 @@ function Welcome({
     if (response.ok) {
       const result = await response.json();
       alert(result.message);
-      // localStorage.removeItem("KEY");
       setDynamicKey("");
       console.log(dynamicKey);
       setIsLoggedIn(false);

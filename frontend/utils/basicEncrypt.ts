@@ -20,11 +20,8 @@ async function sha256(message: string) {
 // Can be a server action
 // Decrypt
 export async function decrypt(ciphertext: string, key: string) {
-  // const oldkey = localStorage.getItem("KEY") as string;
-  // console.log("oldkey", oldkey);
   const newkey = await sha256(key);
   console.log("key", newkey);
   const bytes = CryptoJS.AES.decrypt(ciphertext, newkey);
-  // localStorage.setItem("KEY", newkey);
   return [JSON.parse(bytes.toString(CryptoJS.enc.Utf8)), newkey];
 }

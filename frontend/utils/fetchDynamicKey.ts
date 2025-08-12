@@ -28,7 +28,6 @@ async function fetchDynamicKey() {
       BigInt(privateDigit),
       BigInt(primenumber)
     );
-    // localStorage.setItem("KEY", result?.key);
     return String(privateKeyClient);
   }
 }
