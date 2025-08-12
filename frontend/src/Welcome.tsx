@@ -19,7 +19,7 @@ function Welcome({
     (async () => {
       await handleGetUsers();
     })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleLogout(): Promise<void> {
@@ -40,18 +40,24 @@ function Welcome({
   }
 
   async function handleGetUsers(): Promise<void> {
-    const response = await fetch("http://localhost:8000/users", {
-      method: "GET",
-      credentials: "include",
-    });
+    try {
+      const response = await fetch("http://localhost:8000/users", {
+        method: "GET",
+        credentials: "include",
+      });
 
-    if (response.ok) {
-      const result = await response.json();
-      console.log(result);
-      const decryptedResult = await decrypt(result?.message, dynamicKey);
-      console.log(decryptedResult[0]);
-      setDynamicKey(decryptedResult[1]);
-      setUsers(decryptedResult[0]);
+      if (response.ok) {
+        const result = await response.json();
+        console.log(result);
+        const decryptedResult = await decrypt(result?.message, dynamicKey);
+        console.log(decryptedResult[0]);
+        setDynamicKey(decryptedResult[1]);
+        setUsers(decryptedResult[0]);
+      }
+    } catch (error) {
+      console.error(error);
+      // alert((error as Error).message + " . Please reload.");
+      window.location.reload();
     }
   }
 

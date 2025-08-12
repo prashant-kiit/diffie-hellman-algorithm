@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts,tsx --ignore dist --exec \"npm run build && npm run preview\"",
+    "dev": "nodemon --watch src --watch utils --watch atoms --ext ts,tsx --ignore dist --exec \"npm run build && npm run preview\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

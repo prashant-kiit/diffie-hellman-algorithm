@@ -22,7 +22,7 @@ function App() {
           throw new Error(result.error);
         }
         console.log(result);
-        const key = await fetchDynamicKey();
+        const key = await fetchDynamicKey() as string;
         setDynamicKey(key);
         console.log("Dynamic key fetched", dynamicKey, key);
         setIsLoggedIn(true);
@@ -30,6 +30,7 @@ function App() {
         console.error(error);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

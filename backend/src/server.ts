@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import keytar from "keytar";
 import authorisor from "./authorisor.js";
 import { encrypt } from "./basicEncrypt.js";
+import modPow from "./modPow.js";
 
 const server = express();
 const PORT = process.env.PORT || 8000;
@@ -20,6 +21,10 @@ const users = [
   },
   {
     username: "Chinku",
+    password: "12345",
+  },
+  {
+    username: "Ram",
     password: "12345",
   },
 ];
@@ -83,14 +88,20 @@ server.get("/verify-token", (req, res) => {
 });
 
 server.get("/key", async (req, res) => {
+  const privateDigit = Math.floor(Math.random() * 10);
+  const generator = process.env.GENERATOR as string;
+  const primenumber = process.env.PRIMENUMBER as string;
+
+  const publicKeyClient = req.query.publicKeyClient as string;
+  const privateKeyServer = modPow(BigInt(publicKeyClient), BigInt(privateDigit), BigInt(primenumber));
+
+  const publicKeyServer = modPow(BigInt(generator), BigInt(privateDigit), BigInt(primenumber)); 
   const username = req.user?.username as string;
-  const oldkey = (await keytar.getPassword(
-    "DiffieHellmanApp",
-    `KEY-${username}`
-  )) as string;
+
+  await keytar.setPassword("DiffieHellmanApp", `KEY-${username}`, String(privateKeyServer));
 
   res.status(200).json({
-    key: oldkey,
+    publicKeyServer: String(publicKeyServer),
   });
   return;
 });
