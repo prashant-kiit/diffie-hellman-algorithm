@@ -1,4 +1,5 @@
 # diffie-hellman-algorithm
 diffie-hellman-algorithm
 
-// Procedure
+// Procedure for envariable vault
+https://www.dotenv.org/vault/
