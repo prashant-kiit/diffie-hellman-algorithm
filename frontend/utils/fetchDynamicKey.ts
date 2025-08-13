@@ -4,9 +4,7 @@ async function fetchDynamicKey() {
   const privateDigit = Math.floor(Math.random() * 10);
   const generator = import.meta.env.VITE_GENERATOR;
   const primenumber = import.meta.env.VITE_PRIMENUMBER;
-  // console.log(privateDigit);
-  // console.log(import.meta.env.VITE_GENERATOR);
-  // console.log(import.meta.env.VITE_PRIMENUMBER);
+
   const publicKeyClient = modPow(
     BigInt(generator),
     BigInt(privateDigit),
